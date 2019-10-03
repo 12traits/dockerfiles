@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     \
     ln -s locale.h /usr/include/xlocale.h && \
     \
-    pip install numpy pandas scipy scikit-learn && \
+    pip install numpy pandas scipy scikit-learn matplotlib seaborn && \
     \
     rm -r /root/.cache && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
