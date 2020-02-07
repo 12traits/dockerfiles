@@ -7,10 +7,7 @@ RUN apk add --no-cache \
     apk add libstdc++ openblas && \
     \
     ln -s locale.h /usr/include/xlocale.h && \
-    \
-    pip install numpy pandas scipy scikit-learn matplotlib seaborn pandas-gbq && \
-    \
-    rm -r /root/.cache && \
+    rm -rf /root/.cache && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
     find /usr/lib/python3.*/site-packages/ -name '*.so' -print -exec sh -c 'file "{}" | grep -q "not stripped" && strip -s "{}"' \; && \
     \
@@ -18,6 +15,6 @@ RUN apk add --no-cache \
     \
     apk del .build-dependencies
 RUN apk add bash
-RUN conda install pyarrow -c conda-forge
+RUN conda install pyarrow numpy pandas scipy scikit-learn matplotlib seaborn pandas-gbq -c conda-forge
 
 
