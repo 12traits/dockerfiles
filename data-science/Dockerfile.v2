@@ -7,7 +7,7 @@ RUN apk add --no-cache \
         g++ gfortran file binutils \
         gcc musl-dev python3-dev cython openblas-dev py-gevent make libffi-dev bash \
         jpeg-dev zlib-dev
-RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn  
+RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio
 RUN rm -r /root/.cache && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
     find /usr/lib/python3.*/site-packages/ -name '*.so' -print -exec sh -c 'file "{}" | grep -q "not stripped" && strip -s "{}"' \;
