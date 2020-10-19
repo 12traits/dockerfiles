@@ -6,8 +6,35 @@ RUN apk add --no-cache \
         --virtual=.build-dependencies \
         g++ gfortran file binutils \
         gcc musl-dev python3-dev cython openblas-dev py-gevent make libffi-dev bash \
-        jpeg-dev zlib-dev
-RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio
+        jpeg-dev zlib-dev git cmake
+RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio cython
+RUN git clone https://github.com/apache/arrow.git
+
+RUN mkdir /arrow/cpp/build    
+WORKDIR /arrow/cpp/build
+
+ENV ARROW_BUILD_TYPE=release
+ENV ARROW_HOME=/usr/local
+ENV PARQUET_HOME=/usr/local
+
+#disable backtrace
+RUN sed -i -e '/_EXECINFO_H/,/endif/d' -e '/execinfo/d' ../src/arrow/util/logging.cc
+
+RUN cmake -DCMAKE_BUILD_TYPE=$ARROW_BUILD_TYPE \
+          -DCMAKE_INSTALL_LIBDIR=lib \
+          -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
+          -DARROW_PARQUET=on \
+          -DARROW_PYTHON=on \
+          -DARROW_PLASMA=on \
+          -DARROW_BUILD_TESTS=OFF \
+          ..
+RUN make -j$(nproc)
+RUN make install
+
+WORKDIR /arrow/python
+
+RUN python setup.py build_ext --build-type=$ARROW_BUILD_TYPE \
+       --with-parquet --inplace
 RUN rm -r /root/.cache && \
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
     find /usr/lib/python3.*/site-packages/ -name '*.so' -print -exec sh -c 'file "{}" | grep -q "not stripped" && strip -s "{}"' \;
