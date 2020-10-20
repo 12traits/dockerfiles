@@ -8,7 +8,7 @@ RUN apk add --no-cache \
         gcc musl-dev python3-dev cython openblas-dev py-gevent make libffi-dev bash \
         jpeg-dev zlib-dev git cmake
 RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio cython
-RUN git clone https://github.com/apache/arrow.git
+RUN git clone https://github.com/apache/arrow.git --branch apache-arrow-1.0.1 --single-branch
 
 RUN mkdir /arrow/cpp/build    
 WORKDIR /arrow/cpp/build
@@ -36,6 +36,7 @@ WORKDIR /arrow/python
 RUN python setup.py build_ext --build-type=$ARROW_BUILD_TYPE \
        --with-parquet --inplace
 RUN python setup.py install
-RUN rm -r /root/.cache && \
+WORKDIR /
+RUN rm -r /root/.cache && rm -rf /arrow &&\
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
     find /usr/lib/python3.*/site-packages/ -name '*.so' -print -exec sh -c 'file "{}" | grep -q "not stripped" && strip -s "{}"' \;
