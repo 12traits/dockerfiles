@@ -7,7 +7,7 @@ RUN apk add --no-cache \
         g++ gfortran file binutils \
         gcc musl-dev python3-dev cython openblas-dev py-gevent make libffi-dev bash \
         jpeg-dev zlib-dev git cmake
-RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio cython
+RUN pip install Pillow pipenv numpy scipy pandas scikit-learn matplotlib seaborn gevent grpcio==1.33.2 cython
 RUN git clone https://github.com/apache/arrow.git --branch apache-arrow-1.0.1 --single-branch
 
 RUN mkdir /arrow/cpp/build    
