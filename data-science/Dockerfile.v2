@@ -40,3 +40,5 @@ WORKDIR /
 RUN rm -r /root/.cache && rm -rf /arrow &&\
     find /usr/lib/python3.*/ -name 'tests' -exec rm -r '{}' + && \
     find /usr/lib/python3.*/site-packages/ -name '*.so' -print -exec sh -c 'file "{}" | grep -q "not stripped" && strip -s "{}"' \;
+
+RUN pip install pyarrow==1.0.1
